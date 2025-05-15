@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import Optional, AsyncGenerator
 import uvicorn
 import logging
+import os
 
 # Import the RAG agent from the existing file
 from rag_agent import rag_agent, load_knowledge
@@ -116,6 +117,10 @@ if __name__ == "__main__":
     # Configure logging
     logging.basicConfig(level=logging.INFO)
 
+    # Get port from environment variable with a fallback to 8000
+    port = int(os.environ.get("PORT", 8000))
+
     # Run the API server using Uvicorn
-    logger.info("Starting API server...")
-    uvicorn.run("rag_agent_api:app", host="localhost", port=8000, reload=True)
+    # Bind to 0.0.0.0 for Render deployment
+    logger.info(f"Starting API server on port {port}...")
+    uvicorn.run("rag_agent_api:app", host="0.0.0.0", port=port, reload=True)
